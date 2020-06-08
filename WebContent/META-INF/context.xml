@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<Context>
+	<!-- 接続したいDB名をurlに指定。username,passwordを入力し、Resourceのnameを任意指定 -->
+	<Resource name="jdbc/memberManage" auth="Container"
+		type="javax.sql.DataSource" maxTotal="5" maxIdle="30"
+		maxWaitMillis="10000" username="root" password="root"
+		driverClassName="com.mysql.jdbc.Driver" useSSL="false"
+		url="jdbc:mysql://localhost:8889/Company?serverTimezone=UTC" />
+</Context>
