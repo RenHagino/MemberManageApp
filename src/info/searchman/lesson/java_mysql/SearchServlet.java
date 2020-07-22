@@ -41,72 +41,6 @@ public class SearchServlet extends HttpServlet {
 			}
 	}
 
-	//=============================================================
-	// 所属部署と役職取得メソッドを取得し、search.jspに渡す
-	//=============================================================
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
-		// DB接続のためのクラスを設定
-		Connection connect = null;
-		PreparedStatement stmt = null;
-		ResultSet result = null;
-
-		//レスポンスをUTF-8に設定
-		request.setCharacterEncoding("UTF-8");
-
-		//処理開始
-		try {
-
-		//データソースからConnectionを取得(コネクションループを使うときに必要な処理)
-		connect = ds.getConnection();
-
-		//Beansから呼び出してデータを取得する場合はこの処理を使う
-			//MemberBeans member = new MemberBeans(request);
-			//member.getDepartmentData();
-			//member.getPositionData();
-
-		//sql発行準備
-		StringBuffer sql = new StringBuffer();
-
-		//sqlの処理を定義
-		sql.append("select * from department");
-
-		//現在発行しようとしているsqlをデバッグ
-		System.out.println(sql);
-
-		//ステートメントに接続用のconnectとsql(String型)を設置する
-		stmt = connect.prepareStatement(new String(sql));
-
-		//実際にステートメントを実行
-		stmt.execute();
-
-		//実行結果をResultクラス(rset)に代入
-		result = stmt.executeQuery();
-
-		//実行結果をresult.jspに渡すため、セットする
-		request.setAttribute("result", result);
-
-		// searchresult.jspへ遷移する
-		request.getRequestDispatcher("index.jsp").forward(request, response);
-
-		//rset(実行結果), stmt(ステートメント), coonect(DB接続)それぞれのクラスを.close()で閉じる
-		result.close();
-		stmt.close();
-		connect.close();
-
-		//例外処理
-		}catch(Exception e) {
-			//例外処理。DBに接続できなったなど何らかのエラーで処理が正しく動かなかった場合の処理
-			e.printStackTrace();
-			String status ="DB接続に失敗しました。管理者に連絡してください。";
-			request.setAttribute("status", status);
-			request.getRequestDispatcher("/result.jsp").forward(request, response);
-		}finally {
-			//処理を追加
-		}
-	}
-
 
 	//=============================================================
 	// 登録メソッド
@@ -129,6 +63,8 @@ public class SearchServlet extends HttpServlet {
 		String id = request.getParameter("id");
 		String sex = request.getParameter("sex");
 		String age = request.getParameter("age");
+		String department = request.getParameter("department");
+		String position = request.getParameter("position");
 
 		try {
 
@@ -142,14 +78,15 @@ public class SearchServlet extends HttpServlet {
 			connect = ds.getConnection();
 
 			//sql文の作成
-			StringBuffer sql = new StringBuffer();
+			//StringBuffer sql = new StringBuffer("select * from members where 1 = 1");
 
-			// sql文の内容を決める。今回はselect文章でmembersテーブルからそれぞれの項目を取得してくる
-			sql.append("select * from members");
+			//テーブル結合でデータを入手
+			StringBuffer sql = new StringBuffer("select members.id, name, sex, age, d_name, p_name from members inner join `department` on members.department_id = department.id inner join `position` on members.position_id = position.id where 1 = 1");
+
 
 			// ID
 			if (id != "") {
-				sql.append(" where id ='" + id + "'");
+				sql.append(" and id ='" + id + "'");
 			}
 			//　名前
 			if (name != "") {
@@ -164,6 +101,16 @@ public class SearchServlet extends HttpServlet {
 			// 年齢
 			if (age != "") {
 				sql.append(" and age ='" + age + "'");
+			}
+
+			// 部署
+			if (department != "") {
+				sql.append(" and department_id ='" + department + "'");
+			}
+
+			// 役職
+			if (position != "") {
+				sql.append(" and position_id ='" + position + "'");
 			}
 
 			//現在発行しようとしているsqlをデバッグ
@@ -195,7 +142,7 @@ public class SearchServlet extends HttpServlet {
 			e.printStackTrace();
 			String status ="接続に失敗しました。管理者に連絡してください。";
 			request.setAttribute("status", status);
-			request.getRequestDispatcher("/result.jsp").forward(request, response);
+			request.getRequestDispatcher("/error.jsp").forward(request, response);
 
 		//最終処理
 		} finally {

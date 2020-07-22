@@ -20,7 +20,7 @@ public class LogoutServlet extends HttpServlet {
             session.removeAttribute("loginUser");
         }
         //セッションを消去した後は再度loginページに遷移する
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/login.jsp");
+        RequestDispatcher rd = request.getRequestDispatcher("/login.jsp");
         rd.forward(request, response);
     }
 

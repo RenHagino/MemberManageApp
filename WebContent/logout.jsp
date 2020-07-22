@@ -7,36 +7,19 @@
 		<link rel="stylesheet" type="text/css" href="./css/reset.css">
 		<title>ログアウトページです</title>
 	</head>
-	<header class="header">
-	<div class="title">
-		<h1>社員管理画面</h1>
-	</div>
-	<nav class="menu">
-		<ul>
-			<li class="btn btn-menu">
-				<a href="./search.jsp">社員を検索</a>
-			</li>
-			<li class="btn btn-menu">
-				<a href="./login.jsp">ログイン</a>
-			</li>
-			<li class="btn btn-menu">
-				<a href="./logout.jsp">ログアウト</a>
-			</li>
-		</ul>
-	</nav>
-	</header>
+
+	<!-- ヘッダー読み込み -->
+	<jsp:include page="header.jsp" flush="true" />
+
 	<body>
 	  <div class="main">
-		<h1 class="page-title">現在ログイン中です</h1>
-			<form class="form" action="LogoutServlet" method="post">
-			<p class="title">ログアウトしますか？</p>
-			<div class="form-content">
-				<input class="submit" type="submit" value="ログアウト">
-			</div>
+	  		<h1 class="page-title">現在、管理者としてログイン中です。ログアウトしますか？</h1>
+			<form class="auth-form logout-form" action="/java_mysql/LogoutServlet" method="post">
+				<button class="submit logout" type="submit">
+					ログアウト
+				</button>
 	      </form>
 	    </div>
-	<footer class="footer">
-		<p>Copyright :</p>
-	</footer>
+
 	</body>
 </html>

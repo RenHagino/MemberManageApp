@@ -117,7 +117,7 @@ public class MemberBeans {
 	public Boolean getDepartmentData() {
 		try {
 			//sql作成
-			String sql = "select * from department";;
+			String sql = "select * from department";
 			//DBに接続
 			doDataBase(sql);
 			//結果を返す
@@ -192,8 +192,8 @@ public class MemberBeans {
 		try {
 
 			// sql文 の作成
-			String sql = "insert into members(id, name, sex, age, department_id, position_id)"
-				+ "values ('" + id + "','" + name + "','" + sex + "','" + age + "')";
+			String sql = "insert into members(name, sex, age, department_id, position_id)"
+				+ "values ('" + name + "','" + sex + "','" + age + "')";
 
 			// データベース接続&sqlの実行
 			doDataBase(sql);
@@ -214,8 +214,8 @@ public class MemberBeans {
 		try {
 
 			// sql文 の作成
-			String sql = "insert into members(id, name, sex, age, department_id, position_id)"
-					+ "values (" + id + ",'" + name + "','"+ sex + "'," + age + "," + department + "," + position + ")";
+			String sql = "insert into members(name, sex, age, department_id, position_id)"
+					+ "values ('" + name + "','"+ sex + "'," + age + "," + department + "," + position + ")";
 
 			// データベース接続&sqlの実行
 			doDataBase(sql);
@@ -250,13 +250,20 @@ public class MemberBeans {
 	}
 
 	//===================================================
-	//データ 削除メソッド　Update todo:部署と役職も編集できるように
+	//データ 更新メソッド　Update todo:部署と役職も編集できるように
+	//===================================================
+	//public Boolean change() {
+		//return true;
+	//}
+
+	//===================================================
+	//データ 更新メソッド　Update todo:部署と役職も編集できるように
 	//===================================================
 	public Boolean updateData() {
 		try {
 			//sql文の作成
 			//UPDATE `members` SET `id`= 1,  `name`= '健太浪', `sex`= '男性', `age` = 24 WHERE `id` = 1 ;
-			String sql = " Update members set name = '" + name + "', sex = '" + sex + "', age = " + age + " WHERE id = " + id;
+			String sql = " Update members set name = '" + name + "', sex = '" + sex + "', age = '" + age + "', department_id = '" + department + "', position_id = '" + position + "' WHERE id = " + id;
 
 			// データベース接続&sqlの実行
 			doDataBase(sql);
@@ -269,6 +276,7 @@ public class MemberBeans {
 			return false;
 		}
 	}
+
 
 
 }

@@ -21,9 +21,9 @@ public class EditServlet extends HttpServlet {
 
 		//ログインセッションチェック
 		HttpSession session = request.getSession(false);
+
+		//ログインユーザーセッションが残っていた場合は何も処理を行わない
         if (session != null && session.getAttribute("loginUser") != null && (Boolean)session.getAttribute("loginUser")){
-            RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
-            rd.forward(request, response);
 
         //ログインにセッションがなく、loginUserがnullの場合
         } else {
@@ -33,6 +33,7 @@ public class EditServlet extends HttpServlet {
             rd.forward(request, response);
         }
 
+    try {
 		//文字コードの設定
 		request.setCharacterEncoding("UTF-8");
 
@@ -42,49 +43,74 @@ public class EditServlet extends HttpServlet {
 		//実行ステータスの宣言
 		String status = "成功しました";
 
-		//JavaBeansの初期化 index.jspからのrequestをMemberBeansに入れてインステンス化 (new)する
+		//JavaBeansの初期化 index.jspからのrequestをMemberBeansに入れてインステンス化する
 		MemberBeans member = new MemberBeans(request);
 
 		//Switch文で登録の成功失敗を判断
 		switch (mode) {
 
-		//addDataメソッドの返り値がfalseだった場合
-		case "add":
-			if (member.addAllData() == false) {
-				status = "データの追加に失敗しました";
+		//所属事務所取得メソッド
+		case "getD":
+			if (member.getDepartmentData() == true) {
+				status = "所属事務所のデータ取得に成功しました";
+				//statusをセットしてresult.jspに転送
+				request.getRequestDispatcher("/result.jsp").forward(request, response);
 			}
 			break;
 
-		//deleteDataメソッドの返り値がfalseだった場合
+		//社員追加メソッド
+		case "add":
+			if (member.addAllData() == false) {
+				status = "データの追加に失敗しました";
+				request.setAttribute("status", status);
+				request.getRequestDispatcher("/sample.jsp").forward(request, response);
+			}else {
+				status = "データの追加に成功しました";
+				request.setAttribute("status", status);
+				request.getRequestDispatcher("/sample.jsp").forward(request, response);
+			}
+			break;
+
+		//削除確認メソッド
+		case "check" :
+			request.setAttribute("member", member);
+			request.getRequestDispatcher("/delete.jsp").forward(request, response);
+			break;
+
+		//削除確定メソッド
 		case "delete":
 			if (member.deleteData() == false) {
 				status = "データの削除に失敗しました。";
+			}else{
+				request.getRequestDispatcher("/index.jsp").forward(request, response);
 			}
 			break;
 
 		//変更 : change.jspに遷移する
-		case "change": {
-			//requestにmember変数をセットし、responseと共にchange.jspに遷移する
+		case "change":
 			request.setAttribute("member", member);
 			request.getRequestDispatcher("/change.jsp").forward(request, response);
-			}
+			//なぜbreakではなくreturn???
 			break;
 
-		//アップデート : change.jspで確定ボタンを押す
+		//変更確定 : change.jspで確定ボタンを押す
 		case "update":
 			if (member.updateData() == false) {
 				status = "データのアップデートに失敗しました";
 			}
-
-		//それ以外の場合(trueだった場合)は特にメッセージを定義せずにbreakされる
-
+			break;
 		}
 
 		//statusをセットしてresult.jspに転送
 		request.setAttribute("status", status);
 		request.getRequestDispatcher("/result.jsp").forward(request, response);
+
+    }catch(Exception e) {
+    	//例外処理。DBに接続できなったなど何らかのエラーで処理が正しく動かなかった場合の処理
+		e.printStackTrace();
 	}
 
+	}
 	//メソッド定義 doGet
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

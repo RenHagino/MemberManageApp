@@ -3,64 +3,77 @@
 
 <html>
 <head>
-<title>検索結果</title>
+	<meta charset="UTF-8">
+	<title>検索結果</title>
 	<link rel="stylesheet" type="text/css" href="./css/style.css">
 	<link rel="stylesheet" type="text/css" href="./css/reset.css">
 </head>
 <body>
-	<header class="header">
-		<div class="title">
-			<h1>社員管理アプリ</h1>
-		</div>
-		<nav class="menu">
-			<ul>
-				<li class="btn btn-menu">
-					<a href="./index.jsp">データ登録画面へ</a>
-				</li>
-				<li class="btn btn-menu">
-					<a href="./search.jsp">データ検索画面へ</a>
-				</li>
-				<li class="btn btn-menu">
-					<a>メニュー2</a>
-				</li>
-			</ul>
-		</nav>
-		</header>
-		<div class="main">
-		<!-- rsetはsearch.jspで実行されたSQLのステートメントの実行結果がrequest.setAttributeで渡ってくる -->
-		<%
-			ResultSet rset = (ResultSet) request.getAttribute("result");
-		%>
+	<!-- ヘッダー読み込み -->
+	<jsp:include page="header.jsp" flush="true" />
+
+	<div class="main">
+
+	<!-- search.jspで実行された社員の検索結果を表示-->
+	<%
+		ResultSet rset = (ResultSet) request.getAttribute("result");
+	%>
 
 		<div class="page-title">
 			<h1>検索結果</h1>
 		</div>
+		<!-- 検索結果がnullの場合はここに表示するメッセージを入れる -->
+		<div class="search-null">
+
+		</div>
 
 		<table class="member-table" border="1">
 			<tr class="member-table line" bgcolor="#cccccc">
-				<td class="member-table item"><b>ID</b></td>
-				<td class="member-table item"><b>名前</b></td>
-				<td class="member-table item"><b>性別</b></td>
-				<td class="member-table item" ><b>年齢</b></td>
-				<td class="member-table item" ><b>部署</b></td>
-				<td class="member-table item" ><b>役職</b></td>
-				<td class="member-table item"><b>削除</b></td>
-				<td class="member-table item"><b>変更</b></td>
+				<td class="member-table item item_s"><b>ID</b></td>
+				<td class="member-table item item_l"><b>名前</b></td>
+				<td class="member-table item item_s"><b>性別</b></td>
+				<td class="member-table item item_s" ><b>年齢</b></td>
+				<td class="member-table item item_l" ><b>部署</b></td>
+				<td class="member-table item item_m" ><b>役職</b></td>
+				<td class="member-table item item_btn"><b>削除</b></td>
+				<td class="member-table item item_btn"><b>変更</b></td>
 			</tr>
 			<%
 				while (rset.next()) {
 			%>
 			<tr class="line">
-				<td class="member-table item"><%=rset.getString(1)%></td>
-				<td class="member-table item"><%=rset.getString(2)%></td>
-				<td class="member-table item"><%=rset.getString(3)%></td>
-				<td class="member-table item"><%=rset.getString(4)%></td>
-				<td class="member-table item"><%=rset.getString(5)%></td>
-				<td class="member-table item"><%= rset.getString(6)%></td>
+				<td class="member-table item item_s"><%=rset.getString(1)%></td>
+				<td class="member-table item item_l"><%=rset.getString(2)%></td>
+				<td class="member-table item item_s"><%=rset.getString(3)%></td>
+				<td class="member-table item item_s"><%=rset.getString(4)%></td>
+				<td class="member-table item item_l"><%=rset.getString(5)%></td>
+				<td class="member-table item item_m"><%= rset.getString(6)%></td>
 				<!-- 削除ボタン-->
-				<td class="member-table item delete"><a href="Edit?&mode=delete&id=<%=rset.getString(1)%>">削除する</a></td>
+				<td class="member-table item item_btn delete">
+					<form action="/java_mysql/Edit" method="POST">
+						<input type="hidden" name="mode" value="check">
+						<input type="hidden" name="id" value="<%=rset.getString(1)%>">
+						<input type="hidden" name="name" value="<%=rset.getString(2)%>">
+						<input type="hidden" name="sex" value="<%=rset.getString(3)%>">
+						<input type="hidden" name="age" value="<%=rset.getString(4)%>">
+						<input type="hidden" name="department" value="<%=rset.getString(5)%>">
+						<input type="hidden" name="position" value="<%=rset.getString(6)%>">
+						<input class="submit" type="submit" value="削除">
+					</form>
+				</td>
 				<!-- 更新ボタン -->
-				<td class="member-table item update"><a href="Edit?&mode=change&id=<%=rset.getString(1)%>">変更する</a></td>
+				<td class="member-table item item_btn update">
+					<form action="/java_mysql/Edit" method="POST">
+						<input type="hidden" name="mode" value="change">
+						<input type="hidden" name="id" value="<%=rset.getString(1)%>">
+						<input type="hidden" name="name" value="<%=rset.getString(2)%>">
+						<input type="hidden" name="sex" value="<%=rset.getString(3)%>">
+						<input type="hidden" name="age" value="<%=rset.getString(4)%>">
+						<input type="hidden" name="department" value="<%=rset.getString(5)%>">
+						<input type="hidden" name="position" value="<%=rset.getString(6)%>">
+						<input class="submit" type="submit" value="変更">
+					</form>
+				</td>
 			</tr>
 			<%
 				}
@@ -68,8 +81,5 @@
 		</table>
 		<br>
 	</div>
-	<footer class="footer">
-		<p>Copyright :</p>
-	</footer>
 </body>
 </html>
